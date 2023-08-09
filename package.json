@@ -1,5 +1,4 @@
 {
-  "private": true,
   "displayName": "Pylux RPI Light Control",
   "name": "homebridge-pylux-rpi-lightcontrol",
   "version": "2.0.0",
@@ -7,10 +6,10 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/adesouki/homebridge-anarki-lightcontrol.git"
+    "url": "https://github.com/adesouki/homebridge-pylux-rpi-lightcontrol.git"
   },
   "bugs": {
-    "url": "https://github.com/adesouki/homebridge-anarki-lightcontrol/issues"
+    "url": "https://github.com/adesouki/homebridge-pylux-rpi-lightcontrol/issues"
   },
   "engines": {
     "node": "^18.17.0",
