@@ -1,7 +1,7 @@
-import { Service, PlatformAccessory, CharacteristicValue } from "homebridge";
+import { Service, PlatformAccessory } from 'homebridge';
 
-import { PylyxRPILightSWPlatform } from "./platform";
-import fetch from "node-fetch";
+import { PylyxRPILightSWPlatform } from './platform';
+import fetch from 'node-fetch';
 
 export class PylyxRPILightSW {
   private service: Service;
@@ -19,21 +19,21 @@ export class PylyxRPILightSW {
     private readonly platform: PylyxRPILightSWPlatform,
     private readonly accessory: PlatformAccessory,
   ) {
-    this.ip = this.platform.config.ip;
-    this.port = this.platform.config.port;
-    this.switchSerialNumber = this.platform.config.serial;
-    this.token = this.platform.config.rpi_token;
-    this.url = "http://" + this.ip + ":" + this.port + "/light";
+    this.ip = this.platform.config.ip as string;
+    this.port = this.platform.config.port as number;
+    this.switchSerialNumber = this.platform.config.serial as string;
+    this.token = this.platform.config.rpi_token as string;
+    this.url = 'http://' + this.ip + ':' + this.port + '/light';
     this.accessory
       .getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(
         this.platform.Characteristic.Manufacturer,
-        "Default-Manufacturer",
+        'Default-Manufacturer',
       )
-      .setCharacteristic(this.platform.Characteristic.Model, "Default-Model")
+      .setCharacteristic(this.platform.Characteristic.Model, 'Default-Model')
       .setCharacteristic(
         this.platform.Characteristic.SerialNumber,
-        "Default-Serial",
+        'Default-Serial',
       );
 
     this.service =
@@ -56,32 +56,34 @@ export class PylyxRPILightSW {
     // 👇️ const response: Response
     if (value) {
       //ON
-      fRequestString = "turn-on";
+      fRequestString = 'turn-on';
     } else {
       //OFF
-      fRequestString = "turn-off";
+      fRequestString = 'turn-off';
     }
     try {
-      const fetchReq = fetch(this.url, {
-        method: "POST",
+      fetch(this.url, {
+        method: 'POST',
         body: JSON.stringify({ req: fRequestString, token: this.token }),
         headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json, text/plain, */*",
+          'Content-Type': 'application/json',
+          Accept: 'application/json, text/plain, */*',
         },
       })
         .then((res) => res.json())
         .then((res) => {
-          if (res.token == this.token) {
-            this.states.On = res.status == "on" ? true : false;
+          if (res.token === this.token) {
+            this.states.On = res.status === 'on' ? true : false;
           }
         })
         .catch((error) => {
+          this.platform.log.info('ERROR:', error);
           throw new this.platform.api.hap.HapStatusError(
             this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE,
           );
         });
     } catch (error) {
+      this.platform.log.info('ERROR:', error);
       throw new this.platform.api.hap.HapStatusError(
         this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE,
       );
@@ -94,31 +96,33 @@ export class PylyxRPILightSW {
 
   handleOnGet() {
     try {
-      const fetchReq = fetch(this.url, {
-        method: "POST",
-        body: JSON.stringify({ req: "check-status", token: this.token }),
+      fetch(this.url, {
+        method: 'POST',
+        body: JSON.stringify({ req: 'check-status', token: this.token }),
         headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json, text/plain, */*",
+          'Content-Type': 'application/json',
+          Accept: 'application/json, text/plain, */*',
         },
       })
         .then((res) => res.json())
         .then((res) => {
-          if (res.token == this.token) {
-            if (res.status == "on") {
+          if (res.token === this.token) {
+            if (res.status === 'on') {
               this.states.On = true;
-            } else if (res.status == "off") {
+            } else if (res.status === 'off') {
               //
               this.states.On = false;
             }
           }
         })
         .catch((error) => {
+          this.platform.log.info('ERROR:', error);
           throw new this.platform.api.hap.HapStatusError(
             this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE,
           );
         });
     } catch (error) {
+      this.platform.log.info('ERROR:', error);
       throw new this.platform.api.hap.HapStatusError(
         this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE,
       );
