@@ -1,9 +1,9 @@
 import { Service, PlatformAccessory } from 'homebridge';
 
-import { PylyxRPILightSWPlatform } from './platform';
+import { PyluxRPILightSWPlatform } from './platform';
 import fetch from 'node-fetch';
 
-export class PylyxRPILightSW {
+export class PyluxRPILightSW {
   private service: Service;
   private token: string;
   private ip: string;
@@ -16,24 +16,26 @@ export class PylyxRPILightSW {
   };
 
   constructor(
-    private readonly platform: PylyxRPILightSWPlatform,
+    private readonly platform: PyluxRPILightSWPlatform,
     private readonly accessory: PlatformAccessory,
+	lightSwitchConfig: any,
   ) {
-    this.ip = this.platform.config.ip as string;
-    this.port = this.platform.config.port as number;
-    this.switchSerialNumber = this.platform.config.serial as string;
-    this.token = this.platform.config.rpi_token as string;
+    this.ip = lightSwitchConfig.ip as string;
+    this.port = lightSwitchConfig.port as number;
+    this.switchSerialNumber = lightSwitchConfig.serial as string;
+    this.token = lightSwitchConfig.rpi_token as string;
     this.url = 'http://' + this.ip + ':' + this.port + '/light';
+	
     this.accessory
       .getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(
         this.platform.Characteristic.Manufacturer,
-        'Default-Manufacturer',
+        'Pylux Solutions, LLC.',
       )
-      .setCharacteristic(this.platform.Characteristic.Model, 'Default-Model')
+      .setCharacteristic(this.platform.Characteristic.Model, 'Pylux Smart Light Switch')
       .setCharacteristic(
         this.platform.Characteristic.SerialNumber,
-        'Default-Serial',
+        this.switchSerialNumber,
       );
 
     this.service =
@@ -62,6 +64,7 @@ export class PylyxRPILightSW {
       fRequestString = 'turn-off';
     }
     try {
+		console.log(this.url)
       fetch(this.url, {
         method: 'POST',
         body: JSON.stringify({ req: fRequestString, token: this.token }),

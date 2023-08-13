@@ -1,48 +1,56 @@
 {
-  "pluginAlias": "PyluxRPILightControl",
-  "pluginType": "platform",
-  "singular": false,
-  "headerDisplay": "Pylux Smart Home Solutions",
-  "footerDisplay": "Thank you for using our software.",
-  "schema": {
-    "type": "object",
-    "properties": {
-      "name": {
-        "title": "Name",
-        "type": "string",
-        "required": true,
-        "default": "Example Dynamic Platform"
-      },
-      "ip": {
-        "title": "Rasperry-PI Service IP",
-        "type": "string",
-        "required": true,
-        "default": "localhost"
-      }, 
-      "port": {
-        "title": "Rasperry-PI Service Port",
-        "type": "integer",
-        "required": true,
-        "default": 9999
-      }, 
-      "serial": {
-        "title": "Switch Serial Number",
-        "type": "string",
-        "required": true,
-        "default": "S8CUaLUtQV0dTa5pZCvTJU8kxVpMXPvFBIfoOBLBcFsyO1qbwPkeSf1rKDCpYKm9"
-      },
-      "rpi_token": {
-        "title": "Rasperry-PI Server Token",
-        "type": "string",
-        "required": true,
-        "default": "S8CUaLUtQV0dTa5pZCvTJU8kxVpMXPvFBIfoOBLBcFsyO1qbwPkeSf1rKDCpYKm9"
-      },
-      "switch_count": {
-        "title": "Blubs Count",
-        "type": "integer",
-        "required": true,
-        "default": 1
-      }
-    }
-  }
+	"pluginAlias": "PyluxRPILightControl",
+	"pluginType": "platform",
+	"singular": true,
+	"headerDisplay": "Pylux Smart Home Solutions",
+	"footerDisplay": "Thank you for using our software.",
+	"schema": {
+		"type": "object",
+		"properties": {
+			"LightSwitches": {
+				"type": "array",
+				"title": "Light Switches",
+				"items": {
+					"type": "object",
+					"title": "Light Switch",
+					"name": {
+						"title": "Switch Name",
+						"type": "string",
+						"required": true,
+						"default": ""
+					},
+					"ip": {
+						"title": "Rasperry-PI Service IP",
+						"type": "string",
+						"required": true,
+						"default": ""
+					},
+					"port": {
+						"title": "Rasperry-PI Service Port",
+						"type": "integer",
+						"required": true,
+						"default": 9999
+					},
+					"serial": {
+						"title": "Switch Serial Number",
+						"type": "string",
+						"required": true,
+						"default": ""
+					},
+					"rpi_token": {
+						"title": "Rasperry-PI Server Token",
+						"type": "string",
+						"required": true,
+						"default": ""
+					},
+					"switch_count": {
+						"title": "Blubs Count",
+						"type": "integer",
+						"required": true,
+						"default": 1
+					}
+				}
+			}
+		}
+	}
 }

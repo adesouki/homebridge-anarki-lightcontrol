@@ -6,17 +6,18 @@ import {
   PlatformConfig,
   Service,
   Characteristic,
-} from 'homebridge';
+} from "homebridge";
 
-import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
-import { PylyxRPILightSW } from './platformAccessory';
+import { PLATFORM_NAME, PLUGIN_NAME } from "./settings";
+import { PyluxRPILightSW } from "./platformAccessory";
 
 /**
  * HomebridgePlatform
  * This class is the main constructor for your plugin, this is where you should
  * parse the user config and discover/register accessories with Homebridge.
  */
-export class PylyxRPILightSWPlatform implements DynamicPlatformPlugin {
+export class PyluxRPILightSWPlatform implements DynamicPlatformPlugin {
+  private readonly lightSwitches: PyluxRPILightSW[] = [];
   public readonly Service: typeof Service = this.api.hap.Service;
   public readonly Characteristic: typeof Characteristic =
     this.api.hap.Characteristic;
@@ -29,11 +30,18 @@ export class PylyxRPILightSWPlatform implements DynamicPlatformPlugin {
     public readonly config: PlatformConfig,
     public readonly api: API,
   ) {
+    if (!config) {
+      return;
+    }
+
+    if (!config.LightSwitches) {
+      return;
+    }
     // When this event is fired it means Homebridge has restored all cached accessories from disk.
     // Dynamic Platform plugins should only register new accessories after this event was fired,
     // in order to ensure they weren't added to homebridge already. This event can also be used
     // to start discovery of new accessories.
-    this.api.on('didFinishLaunching', () => {
+    api.on("didFinishLaunching", () => {
       // run the method to discover / register your devices as accessories
       this.discoverDevices();
     });
@@ -56,27 +64,27 @@ export class PylyxRPILightSWPlatform implements DynamicPlatformPlugin {
   discoverDevices() {
     const devices: PlatformConfig[] = [this.config];
 
-    for (const device of devices) {
+    for (const lightSwitch of this.config.LightSwitches) {
       // generate a unique id for the accessory this should be generated from
       // something globally unique, but constant, for example, the device serial
       // number or MAC address
-      const uuid = this.api.hap.uuid.generate(device.serial as string);
+      const uuid = this.api.hap.uuid.generate(lightSwitch.serial as string);
 
       // see if an accessory with the same uuid has already been registered and restored from
       // the cached devices we stored in the `configureAccessory` method above
+
       const existingAccessory = this.accessories.find(
         (accessory) => accessory.UUID === uuid,
       );
 
       if (existingAccessory) {
-
         // if you need to update the accessory.context then you should run `api.updatePlatformAccessories`. eg.:
         // existingAccessory.context.device = device;
         // this.api.updatePlatformAccessories([existingAccessory]);
 
         // create the accessory handler for the restored accessory
         // this is imported from `platformAccessory.ts`
-        new PylyxRPILightSW(this, existingAccessory);
+        new PyluxRPILightSW(this, existingAccessory, lightSwitch);
 
         // it is possible to remove platform accessories at any time using `api.unregisterPlatformAccessories`, eg.:
         // remove platform accessories when no longer present
@@ -86,15 +94,18 @@ export class PylyxRPILightSWPlatform implements DynamicPlatformPlugin {
         // the accessory does not yet exist, so we need to create it
 
         // create a new accessory
-        const accessory = new this.api.platformAccessory(device.name as string, uuid);
+        const accessory = new this.api.platformAccessory(
+          lightSwitch.serial as string,
+          uuid,
+        );
 
         // store a copy of the device object in the `accessory.context`
         // the `context` property can be used to store any data about the accessory you may need
-        accessory.context.device = device;
+        accessory.context.device = lightSwitch;
 
         // create the accessory handler for the newly create accessory
         // this is imported from `platformAccessory.ts`
-        new PylyxRPILightSW(this, accessory);
+        new PyluxRPILightSW(this, accessory, lightSwitch);
 
         // link the accessory to your platform
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [
