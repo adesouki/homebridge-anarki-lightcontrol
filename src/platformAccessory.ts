@@ -1,4 +1,4 @@
-import { Service, PlatformAccessory } from 'homebridge';
+import { Service, PlatformAccessory, PlatformConfig } from 'homebridge';
 
 import { PyluxRPILightSWPlatform } from './platform';
 import fetch from 'node-fetch';
@@ -18,21 +18,24 @@ export class PyluxRPILightSW {
   constructor(
     private readonly platform: PyluxRPILightSWPlatform,
     private readonly accessory: PlatformAccessory,
-	lightSwitchConfig: any,
+    lightSwitchConfig: PlatformConfig,
   ) {
     this.ip = lightSwitchConfig.ip as string;
     this.port = lightSwitchConfig.port as number;
     this.switchSerialNumber = lightSwitchConfig.serial as string;
     this.token = lightSwitchConfig.rpi_token as string;
     this.url = 'http://' + this.ip + ':' + this.port + '/light';
-	
+
     this.accessory
       .getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(
         this.platform.Characteristic.Manufacturer,
         'Pylux Solutions, LLC.',
       )
-      .setCharacteristic(this.platform.Characteristic.Model, 'Pylux Smart Light Switch')
+      .setCharacteristic(
+        this.platform.Characteristic.Model,
+        'Pylux Smart Light Switch',
+      )
       .setCharacteristic(
         this.platform.Characteristic.SerialNumber,
         this.switchSerialNumber,
@@ -64,7 +67,6 @@ export class PyluxRPILightSW {
       fRequestString = 'turn-off';
     }
     try {
-		console.log(this.url)
       fetch(this.url, {
         method: 'POST',
         body: JSON.stringify({ req: fRequestString, token: this.token }),

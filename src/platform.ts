@@ -6,10 +6,10 @@ import {
   PlatformConfig,
   Service,
   Characteristic,
-} from "homebridge";
+} from 'homebridge';
 
-import { PLATFORM_NAME, PLUGIN_NAME } from "./settings";
-import { PyluxRPILightSW } from "./platformAccessory";
+import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
+import { PyluxRPILightSW } from './platformAccessory';
 
 /**
  * HomebridgePlatform
@@ -41,7 +41,7 @@ export class PyluxRPILightSWPlatform implements DynamicPlatformPlugin {
     // Dynamic Platform plugins should only register new accessories after this event was fired,
     // in order to ensure they weren't added to homebridge already. This event can also be used
     // to start discovery of new accessories.
-    api.on("didFinishLaunching", () => {
+    api.on('didFinishLaunching', () => {
       // run the method to discover / register your devices as accessories
       this.discoverDevices();
     });
@@ -62,8 +62,6 @@ export class PyluxRPILightSWPlatform implements DynamicPlatformPlugin {
    * must not be registered again to prevent "duplicate UUID" errors.
    */
   discoverDevices() {
-    const devices: PlatformConfig[] = [this.config];
-
     for (const lightSwitch of this.config.LightSwitches) {
       // generate a unique id for the accessory this should be generated from
       // something globally unique, but constant, for example, the device serial
