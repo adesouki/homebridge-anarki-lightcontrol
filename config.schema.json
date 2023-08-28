@@ -48,7 +48,13 @@
 						"type": "integer",
 						"required": true,
 						"default": 1
-					}
+					},
+					"polling_interval": {
+						"title": "Polling Interval in MS",
+						"type": "integer",
+						"required": true,
+						"default": 800
+					}					
 				}
 			}
 		}
