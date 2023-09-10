@@ -28,7 +28,7 @@ export class PyluxRPILightSWPlatform implements DynamicPlatformPlugin {
   constructor(
     public readonly log: Logger,
     public readonly config: PlatformConfig,
-    public readonly api: API,
+    public readonly api: API
   ) {
     if (!config) {
       return;
@@ -59,7 +59,7 @@ export class PyluxRPILightSWPlatform implements DynamicPlatformPlugin {
   /**
    * This is an example method showing how to register discovered accessories.
    * Accessories must only be registered once, previously created accessories
-   * must not be registered again to prevent "duplicate UUID" errors.
+   * must not be registered again to prevent 'duplicate UUID' errors.
    */
   discoverDevices() {
     for (const lightSwitch of this.config.LightSwitches) {
@@ -72,7 +72,7 @@ export class PyluxRPILightSWPlatform implements DynamicPlatformPlugin {
       // the cached devices we stored in the `configureAccessory` method above
 
       const existingAccessory = this.accessories.find(
-        (accessory) => accessory.UUID === uuid,
+        (accessory) => accessory.UUID === uuid
       );
 
       if (existingAccessory) {
@@ -94,7 +94,7 @@ export class PyluxRPILightSWPlatform implements DynamicPlatformPlugin {
         // create a new accessory
         const accessory = new this.api.platformAccessory(
           lightSwitch.serial as string,
-          uuid,
+          uuid
         );
 
         // store a copy of the device object in the `accessory.context`

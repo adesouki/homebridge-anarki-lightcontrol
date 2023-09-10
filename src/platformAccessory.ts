@@ -9,6 +9,9 @@ export class PyluxRPILightSW {
   private service: Service;
   private token: string;
   private ip: string;
+  private name: string;
+  private roomName: string;
+  private subType: string;
   private port: number;
   private polling_interval: number;
   private switchSerialNumber: string;
@@ -25,6 +28,9 @@ export class PyluxRPILightSW {
   ) {
     this.ip = lightSwitchConfig.ip as string;
     this.port = lightSwitchConfig.port as number;
+	this.name = lightSwitchConfig.name as string;
+	this.roomName = lightSwitchConfig.roomName as string;
+	this.subType = lightSwitchConfig.subType as string;
     this.switchSerialNumber = lightSwitchConfig.serial as string;
     this.token = lightSwitchConfig.rpi_token as string;
     this.url = 'http://' + this.ip + ':' + this.port + '/light';
@@ -46,7 +52,7 @@ export class PyluxRPILightSW {
 
     this.service =
       this.accessory.getService(this.platform.Service.Lightbulb) ||
-      this.accessory.addService(this.platform.Service.Lightbulb);
+      this.accessory.addService(this.platform.Service.Lightbulb, this.roomName + this.name, this.subType);
 
     this.service.setCharacteristic(
       this.platform.Characteristic.Name,
@@ -92,6 +98,8 @@ export class PyluxRPILightSW {
             } else if (res.status === 'off') {
               this.states.On = false;
             }
+			if(!exp)
+				this.service.getCharacteristic(this.platform.Characteristic.On).updateValue(this.states.On);
           }
         })
         .catch((error) => {
@@ -162,7 +170,7 @@ export class PyluxRPILightSW {
       this.platform.Characteristic.On,
       this.states.On,
     );
-
+	this.service.getCharacteristic(this.platform.Characteristic.On).updateValue(this.states.On);
     return this.states.On;
   }
 }

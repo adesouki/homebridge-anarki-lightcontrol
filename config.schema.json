@@ -19,6 +19,18 @@
 						"required": true,
 						"default": ""
 					},
+					"roomName": {
+						"title": "Room Name",
+						"type": "string",
+						"required": true,
+						"default": ""
+					},
+					"subType": {
+						"title": "Sub-Type",
+						"type": "string",
+						"required": true,
+						"default": ""
+					},
 					"ip": {
 						"title": "Rasperry-PI Service IP",
 						"type": "string",
