@@ -48,6 +48,9 @@ export class PyluxRPILightSW {
       .setCharacteristic(
         this.platform.Characteristic.SerialNumber,
         this.switchSerialNumber,
+      ).setCharacteristic(
+        this.platform.Characteristic.Name,
+		this.name
       );
 
     this.service =
@@ -103,20 +106,10 @@ export class PyluxRPILightSW {
           }
         })
         .catch((error) => {
-          this.platform.log.info('ERROR:', error);
-          if (exp) {
-            throw new this.platform.api.hap.HapStatusError(
-              this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE,
-            );
-          }
+          this.platform.log.info('ERROR:', error);          		  
         });
     } catch (error) {
       this.platform.log.info('ERROR:', error);
-      if (exp) {
-        throw new this.platform.api.hap.HapStatusError(
-          this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE,
-        );
-      }
     }
   }
 
@@ -147,16 +140,11 @@ export class PyluxRPILightSW {
         })
         .catch((error) => {
           this.platform.log.info('ERROR:', error);
-          throw new this.platform.api.hap.HapStatusError(
-            this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE,
-          );
         });
     } catch (error) {
       this.platform.log.info('ERROR:', error);
-      throw new this.platform.api.hap.HapStatusError(
-        this.platform.api.hap.HAPStatus.SERVICE_COMMUNICATION_FAILURE,
-      );
     }
+	
     this.service.updateCharacteristic(
       this.platform.Characteristic.On,
       this.states.On,
@@ -165,12 +153,6 @@ export class PyluxRPILightSW {
 
   handleOnGet() {
     this.getStatus(true);
-
-    this.service.updateCharacteristic(
-      this.platform.Characteristic.On,
-      this.states.On,
-    );
-	this.service.getCharacteristic(this.platform.Characteristic.On).updateValue(this.states.On);
     return this.states.On;
   }
 }
